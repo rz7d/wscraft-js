@@ -1,0 +1,12 @@
+{
+  "name": "wscraft-js",
+  "version": "1.0.0",
+  "description": "quick and dirty code for Minecraft over WebSocket",
+  "main": "server.js",
+  "repository": "https://github.com/rz7d/wscraft-js",
+  "author": "azure",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "ws": "^7.1.2"
+  }
+}
