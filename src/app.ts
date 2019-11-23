@@ -52,13 +52,26 @@ function main(): number {
   const options = (parser.parseSystem().options as unknown) as LaunchOption;
 
   function addr(x: string): SocketAddress {
-    if (x.indexOf(":") == -1) {
-      // port only; ex: -i 8080 -o 25565
+    const sepindex = x.lastIndexOf(":");
+    if (sepindex == -1) {
+      // port only; 8080
       return { port: parseInt(x), address: undefined };
     } else {
-      // full spec; ex: -i localhost:8080 -o localhost:25565
-      const split = x.split(":");
-      return { port: parseInt(split[1]), address: split[0] };
+      if (sepindex + 1 < x.length) {
+        const portOrNaN = parseInt(x.slice(sepindex + 1));
+        if (!isNaN(portOrNaN)) {
+          // full spec; wss://localhost:8080
+          return {
+            address: x.slice(0, sepindex),
+            port: portOrNaN
+          };
+        }
+      }
+      // addr only; wss://localhost
+      return {
+        address: x,
+        port: x.startsWith("wss://") ? 443 : 80
+      };
     }
   }
 
