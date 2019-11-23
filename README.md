@@ -9,7 +9,7 @@ Service Provider:
 
 ```
 $ yarn
-$ yarn run start --mode client -i 80 -o localhost:25565
+$ yarn run start --mode server -i 80 -o localhost:25565
 ```
 
 End User:
