@@ -24,7 +24,7 @@ export class ClientConnector implements BridgeConnector {
   connect(inbound: SocketAddress, outbound: SocketAddress) {
     const destination = (outbound.address || "localhost") + ":" + outbound.port;
     const server = createServer(downstream => {
-      logger.info("Detected a new downstream connection.");
+      logger.info("A new downstream connection established.");
       downstream.on("error", err => logger.error(err));
 
       const upstream = new ws(destination);
@@ -50,7 +50,7 @@ export class ClientConnector implements BridgeConnector {
     });
     server.listen(inbound.port, inbound.address);
     logger.info(
-      `Starting TCP/IP server on ${inbound.address || "localhost"}:${
+      `Starting TCP/IP server on ${inbound.address || "0.0.0.0"}:${
         inbound.port
       }`
     );

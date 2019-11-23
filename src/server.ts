@@ -24,7 +24,7 @@ export class ServerConnector implements BridgeConnector {
   connect(inbound: SocketAddress, outbound: SocketAddress) {
     const server = new ws.Server({ host: inbound.address, port: inbound.port });
     server.on("connection", downstream => {
-      logger.info("Detected a new downstream connection.");
+      logger.info("A new downstream connection established.");
       downstream.on("error", err => logger.error(err));
 
       const upstream = new Socket();
@@ -53,7 +53,7 @@ export class ServerConnector implements BridgeConnector {
     });
 
     logger.info(
-      `Starting WebSocket server on ${inbound.address || "localhost"}:${
+      `Starting WebSocket server on ${inbound.address || "0.0.0.0"}:${
         inbound.port
       }`
     );
