@@ -1,0 +1,26 @@
+{
+  "name": "wscraft2",
+  "version": "2.0.0",
+  "main": "dist/app.js",
+  "repository": "https://github.com/rz7d/wscraft-js",
+  "author": "azure",
+  "license": "GPL-3.0-or-later",
+  "scripts": {
+    "build": "yarn run tsc",
+    "start": "node ./dist/app.js"
+  },
+  "dependencies": {
+    "log4js": "^6.1.0",
+    "node-getopt": "^0.3.2",
+    "ws": "^7.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.12.11",
+    "@types/node-getopt": "^0.2.31",
+    "@types/ws": "^6.0.3",
+    "eslint": "^6.7.0",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "typescript": "^3.7.2"
+  }
+}
