@@ -22,12 +22,12 @@ import { ClientConnector } from "./client";
 import { ServerConnector } from "./server";
 
 interface ConnectorMap {
-  [key: string]: () => BridgeConnector;
+  [key: string]: BridgeConnector;
 }
 
 const connectorMap: ConnectorMap = {
-  client: () => new ClientConnector(),
-  server: () => new ServerConnector()
+  client: ClientConnector,
+  server: ServerConnector
 };
 
 const parser = getopt
@@ -55,24 +55,25 @@ function main(): number {
     const sepindex = x.lastIndexOf(":");
     if (sepindex == -1) {
       // port only; 8080
-      return { port: parseInt(x), address: undefined };
-    } else {
-      if (sepindex + 1 < x.length) {
-        const portOrNaN = parseInt(x.slice(sepindex + 1));
-        if (!isNaN(portOrNaN)) {
-          // full spec; wss://localhost:8080
-          return {
-            address: x.slice(0, sepindex),
-            port: portOrNaN
-          };
-        }
-      }
-      // addr only; wss://localhost
-      return {
-        address: x,
-        port: x.startsWith("wss://") ? 443 : 80
-      };
+      return { port: parseInt(x) };
     }
+
+    if (sepindex + 1 < x.length) {
+      const portOrNaN = parseInt(x.slice(sepindex + 1));
+      if (!isNaN(portOrNaN)) {
+        // full spec; wss://localhost:8080
+        return {
+          address: x.slice(0, sepindex),
+          port: portOrNaN
+        };
+      }
+    }
+
+    // addr only; wss://localhost
+    return {
+      address: x,
+      port: x.startsWith("wss://") ? 443 : 80
+    };
   }
 
   const mode = options.mode;
@@ -81,7 +82,7 @@ function main(): number {
 
   const connector = connectorMap[mode];
   if (connector) {
-    connector().connect(inbound, outbound);
+    connector(inbound, outbound);
   } else {
     logger.error(`Invalid mode: ${mode}`);
     parser.showHelp();

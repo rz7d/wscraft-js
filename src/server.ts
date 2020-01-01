@@ -20,43 +20,44 @@ import ws from "ws";
 import { Socket } from "net";
 import { SocketAddress, BridgeConnector, logger } from "./common";
 
-export class ServerConnector implements BridgeConnector {
-  connect(inbound: SocketAddress, outbound: SocketAddress) {
-    const server = new ws.Server({ host: inbound.address, port: inbound.port });
-    server.on("connection", downstream => {
-      logger.info("A new downstream connection established.");
-      downstream.on("error", err => logger.error(err));
+export const ServerConnector: BridgeConnector = (
+  inbound: SocketAddress,
+  outbound: SocketAddress
+) => {
+  const server = new ws.Server({ host: inbound.address, port: inbound.port });
+  server.on("connection", downstream => {
+    logger.info("A new downstream connection established.");
+    downstream.on("error", err => logger.error(err));
 
-      const upstream = new Socket();
-      upstream.setNoDelay(true);
-      upstream.on("error", err => logger.error(err));
-      upstream.on("data", data => downstream.send(data));
-      upstream.on("close", () => {
-        logger.info("[Upstream] Disconnected");
-        downstream.close();
-      });
-
-      upstream.connect({ host: outbound.address, port: outbound.port }, () => {
-        logger.info("[Upstream] Connected");
-      });
-
-      downstream.on("message", msg => {
-        if (typeof msg == "string" || msg instanceof Buffer) {
-          upstream.write(msg);
-        }
-      });
-
-      downstream.on("close", () => {
-        logger.info("[Downstream] Connection closed");
-        upstream.end();
-      });
+    const upstream = new Socket();
+    upstream.setNoDelay(true);
+    upstream.on("error", err => logger.error(err));
+    upstream.on("data", data => downstream.send(data));
+    upstream.on("close", () => {
+      logger.info("[Upstream] Disconnected");
+      downstream.close();
     });
 
-    logger.info(
-      `Starting WebSocket server on ${inbound.address || "0.0.0.0"}:${
-        inbound.port
-      }`
-    );
-    logger.info(`Bridging to ${outbound.address}:${outbound.port}`);
-  }
-}
+    upstream.connect({ host: outbound.address, port: outbound.port }, () => {
+      logger.info("[Upstream] Connected");
+    });
+
+    downstream.on("message", msg => {
+      if (typeof msg == "string" || msg instanceof Buffer) {
+        upstream.write(msg);
+      }
+    });
+
+    downstream.on("close", () => {
+      logger.info("[Downstream] Connection closed");
+      upstream.end();
+    });
+  });
+
+  logger.info(
+    `Starting WebSocket server on ${inbound.address || "0.0.0.0"}:${
+      inbound.port
+    }`
+  );
+  logger.info(`Bridging to ${outbound.address}:${outbound.port}`);
+};
