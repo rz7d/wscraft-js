@@ -50,6 +50,10 @@ interface LaunchOption {
 
 function main(): number {
   const options = (parser.parseSystem().options as unknown) as LaunchOption;
+  if (!options.mode || !options.inbound || !options.outbound) {
+    parser.showHelp();
+    return 2;
+  }
 
   function addr(x: string): SocketAddress {
     const sepindex = x.lastIndexOf(":");
