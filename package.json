@@ -5,9 +5,18 @@
   "repository": "https://github.com/rz7d/wscraft-js",
   "author": "azure",
   "license": "GPL-3.0-or-later",
+  "contributors": [
+    {
+      "name": "kash / Hytus",
+      "url": "https://github.com/KashEight"
+    }
+  ],
   "scripts": {
     "build": "tsc",
     "start": "ts-node ./src/app.ts"
+  },
+  "bin": {
+    "wscraft": "dist/app.js"
   },
   "dependencies": {
     "log4js": "^6.1.0",
