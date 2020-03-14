@@ -1,6 +1,6 @@
 {
   "name": "@rz7/wscraft2",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "main": "dist/app.js",
   "repository": "https://github.com/rz7d/wscraft-js",
   "author": "azure",
@@ -16,7 +16,7 @@
     "start": "ts-node ./src/app.ts"
   },
   "bin": {
-    "wscraft": "dist/app.js"
+    "wscraft": "bin/wscraft.boot.js"
   },
   "dependencies": {
     "log4js": "^6.1.0",
