@@ -32,6 +32,13 @@ export const ClientConnector: BridgeConnector = (
     const upstream = new ws(destination);
     upstream.on("open", () => {
       logger.info("[Upstream] Connected");
+      downstream.on("close", () => {
+        logger.info("[Downstream] Connection closed");
+        upstream.close();
+      });
+      downstream.on("data", data => {
+        upstream.send(data);
+      });
     });
     upstream.on("error", err => logger.error(err));
     upstream.on("message", msg => {
@@ -42,12 +49,6 @@ export const ClientConnector: BridgeConnector = (
     upstream.on("close", () => {
       logger.info("[Upstream] Disconnected");
       downstream.end();
-    });
-
-    downstream.on("data", data => upstream.send(data));
-    downstream.on("close", () => {
-      logger.info("[Downstream] Connection closed");
-      upstream.close();
     });
   });
   server.listen(inbound.port, inbound.address);
